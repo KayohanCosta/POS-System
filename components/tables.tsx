@@ -665,7 +665,7 @@ export default function Tables() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
         {paginatedTables.map((table) => (
           <Card
             key={table.id}
@@ -682,7 +682,7 @@ export default function Tables() {
               }
             }}
           >
-            <CardHeader className="p-3 pb-0">
+            <CardHeader className="p-2 pb-0">
               <div className="flex justify-between items-start">
                 <CardTitle className="text-base">Mesa {table.number}</CardTitle>
                 <Badge className={table.status === "free" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
@@ -694,7 +694,7 @@ export default function Tables() {
                 {table.capacity} lugares
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-3 pt-1">
+            <CardContent className="p-2 pt-1">
               {table.status === "occupied" && table.occupiedAt && (
                 <div className="text-xs text-muted-foreground flex items-center gap-1">
                   <Clock className="h-3 w-3" />
@@ -708,7 +708,7 @@ export default function Tables() {
                 </div>
               )}
             </CardContent>
-            <CardFooter className="p-3 pt-0 flex gap-2">
+            <CardFooter className="p-2 pt-0 flex gap-2">
               {table.status === "free" ? (
                 <>
                   <Button
@@ -811,7 +811,7 @@ export default function Tables() {
 
       {/* Modal para adicionar mesa */}
       <Dialog open={isAddingTable} onOpenChange={setIsAddingTable}>
-        <DialogContent className="max-w-[90vw] sm:max-w-md">
+        <DialogContent className="max-w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Adicionar Nova Mesa</DialogTitle>
             <DialogDescription>Preencha as informações para adicionar uma nova mesa</DialogDescription>
@@ -851,7 +851,7 @@ export default function Tables() {
 
       {/* Modal para editar mesa */}
       <Dialog open={isEditingTable} onOpenChange={setIsEditingTable}>
-        <DialogContent className="max-w-[90vw] sm:max-w-md">
+        <DialogContent className="max-w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Editar Mesa</DialogTitle>
             <DialogDescription>Atualize as informações da mesa</DialogDescription>
@@ -910,7 +910,7 @@ export default function Tables() {
           }
         }}
       >
-        <DialogContent className="max-w-[90vw] sm:max-w-md">
+        <DialogContent className="max-w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto">
           {currentTable && (
             <>
               <DialogHeader>

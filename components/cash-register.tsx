@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useToast } from "@/components/ui/use-toast"
 import { getCashRegisterStatus, openCashRegister, closeCashRegister, addTransaction } from "@/lib/data-utils"
+import { useLoyalty } from "@/lib/loyalty-service"
 
 export default function CashRegister() {
   const { toast } = useToast()
@@ -37,6 +38,9 @@ export default function CashRegister() {
   const [paymentMethods, setPaymentMethods] = useState<Array<{ method: string; amount: string }>>([])
   const [totalPaid, setTotalPaid] = useState(0)
   const [remainingAmount, setRemainingAmount] = useState(0)
+
+  const { customers, registerSalePoints } = useLoyalty()
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string>("")
 
   // Calcular o total pago e o valor restante quando os métodos de pagamento mudam
   useEffect(() => {
@@ -318,6 +322,7 @@ export default function CashRegister() {
       id: Date.now().toString(),
       date: new Date().toISOString(),
       customer: customerName || "Cliente não identificado",
+      customerId: selectedCustomerId,
       products: selectedProducts,
       total: totalAmount,
       paymentMethod,
@@ -326,6 +331,11 @@ export default function CashRegister() {
 
     // Add transaction
     addTransaction(transaction)
+
+    // Registrar pontos de fidelidade se cliente selecionado
+    if (selectedCustomerId) {
+      registerSalePoints(selectedCustomerId, totalAmount, transaction.id)
+    }
 
     // Update state
     setTransactions([transaction, ...transactions])
@@ -359,6 +369,7 @@ export default function CashRegister() {
     setCustomerName("")
     setPaymentMethod("Dinheiro")
     setSelectedTable("")
+    setSelectedCustomerId("")
 
     toast({
       title: "Venda realizada",
@@ -408,6 +419,7 @@ export default function CashRegister() {
       id: Date.now().toString(),
       date: new Date().toISOString(),
       customer: customerName || "Cliente não identificado",
+      customerId: selectedCustomerId,
       products: selectedProducts.map((item) => ({
         id: item.id,
         name: item.name,
@@ -425,11 +437,17 @@ export default function CashRegister() {
     // Adicionar transação
     addTransaction(transaction)
 
+    // Registrar pontos de fidelidade se cliente selecionado
+    if (selectedCustomerId) {
+      registerSalePoints(selectedCustomerId, totalAmount, transaction.id)
+    }
+
     // Limpar dados
     setSelectedProducts([])
     setCustomerName("")
     setPaymentMethod("Dinheiro")
     setPaymentMethods([])
+    setSelectedCustomerId("")
 
     // Update state
     setTransactions([transaction, ...transactions])
@@ -480,7 +498,7 @@ export default function CashRegister() {
         </TabsList>
 
         <TabsContent value="register" className="mt-0">
-          <Card className="card-compact">
+          <Card className="card-compact w-full">
             <CardHeader className="pb-1">
               <CardTitle className="text-sm">Controle de Caixa</CardTitle>
               <CardDescription className="text-xs">
@@ -576,6 +594,33 @@ export default function CashRegister() {
                   />
                 </div>
 
+                <div className="space-y-1">
+                  <Label htmlFor="customerSelect" className="text-xs">
+                    Cliente Fidelidade
+                  </Label>
+                  <select
+                    id="customerSelect"
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-xs"
+                    value={selectedCustomerId}
+                    onChange={(e) => {
+                      setSelectedCustomerId(e.target.value)
+                      if (e.target.value) {
+                        const customer = customers.find((c) => c.id === e.target.value)
+                        if (customer) {
+                          setCustomerName(customer.name)
+                        }
+                      }
+                    }}
+                  >
+                    <option value="">Selecione um cliente (opcional)</option>
+                    {customers.map((customer) => (
+                      <option key={customer.id} value={customer.id}>
+                        {customer.name} - {customer.phone}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 {/* Seleção de mesa para restaurantes */}
                 {localStorage.getItem("businessType") === "restaurant" && !checkoutTable && (
                   <div className="space-y-1">
@@ -659,26 +704,24 @@ export default function CashRegister() {
                         </svg>
                       </div>
                     </div>
-                    {filteredProducts.length > 0 && (
-                      <div className="border rounded-md bg-background shadow-md w-full mt-1 max-h-28 overflow-y-auto z-50">
-                        {filteredProducts.map((product) => (
-                          <div
-                            key={product.id}
-                            className="px-2 py-1 text-xs hover:bg-accent cursor-pointer flex items-center justify-between"
-                            onClick={() => {
-                              setCurrentProduct(product.id)
-                              setSearchText(product.name)
-                              setFilteredProducts([])
-                            }}
-                          >
-                            <span className="truncate inline-block max-w-[60%]">{product.name}</span>
-                            <span className="text-muted-foreground text-right whitespace-nowrap">
-                              R$ {product.price.toFixed(2)}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    <div className="border rounded-md bg-background shadow-md w-full mt-1 max-h-28 overflow-y-auto z-50 absolute left-0 right-0">
+                      {filteredProducts.map((product) => (
+                        <div
+                          key={product.id}
+                          className="px-2 py-1 text-xs hover:bg-accent cursor-pointer flex items-center justify-between"
+                          onClick={() => {
+                            setCurrentProduct(product.id)
+                            setSearchText(product.name)
+                            setFilteredProducts([])
+                          }}
+                        >
+                          <span className="truncate inline-block max-w-[60%]">{product.name}</span>
+                          <span className="text-muted-foreground text-right whitespace-nowrap">
+                            R$ {product.price.toFixed(2)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   <div>
                     <Label htmlFor="quantity" className="text-xs">
@@ -757,168 +800,163 @@ export default function CashRegister() {
                     />
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <div>
                       <Label className="text-xs font-medium">Formas de Pagamento</Label>
                       <p className="text-xs text-muted-foreground mb-2">Selecione uma ou mais formas de pagamento</p>
                     </div>
-
-                    {/* Pagamento em Dinheiro */}
-                    <div className="border rounded-md p-3">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            id="cashPayment"
-                            className="w-4 h-4 text-xs"
-                            checked={paymentMethods.some((p) => p.method === "Dinheiro")}
-                            onChange={(e) => handlePaymentMethodToggle("Dinheiro", e.target.checked)}
-                          />
-                          <Label htmlFor="cashPayment" className="font-medium text-xs">
-                            Dinheiro
-                          </Label>
-                        </div>
-                        {paymentMethods.some((p) => p.method === "Dinheiro") && (
+                    <div className="space-y-3">
+                      {/* Pagamento em Dinheiro */}
+                      <div className="border rounded-md p-3">
+                        <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center space-x-2">
-                            <Input
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              className="w-24 h-8 text-xs"
-                              value={paymentMethods.find((p) => p.method === "Dinheiro")?.amount || ""}
-                              onChange={(e) => handlePaymentMethodAmountChange("Dinheiro", e.target.value)}
-                              placeholder="0.00"
+                            <input
+                              type="checkbox"
+                              id="cashPayment"
+                              className="w-4 h-4 text-xs"
+                              checked={paymentMethods.some((p) => p.method === "Dinheiro")}
+                              onChange={(e) => handlePaymentMethodToggle("Dinheiro", e.target.checked)}
                             />
-                            <span className="text-xs">R$</span>
+                            <Label htmlFor="cashPayment" className="font-medium text-xs">
+                              Dinheiro
+                            </Label>
                           </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Pagamento com Cartão de Crédito */}
-                    <div className="border rounded-md p-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            id="creditCardPayment"
-                            className="w-4 h-4 text-xs"
-                            checked={paymentMethods.some((p) => p.method === "Cartão de Crédito")}
-                            onChange={(e) => handlePaymentMethodToggle("Cartão de Crédito", e.target.checked)}
-                          />
-                          <Label htmlFor="creditCardPayment" className="font-medium text-xs">
-                            Cartão de Crédito
-                          </Label>
+                          {paymentMethods.some((p) => p.method === "Dinheiro") && (
+                            <div className="flex items-center space-x-2">
+                              <Input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                className="w-24 h-8 text-xs"
+                                value={paymentMethods.find((p) => p.method === "Dinheiro")?.amount || ""}
+                                onChange={(e) => handlePaymentMethodAmountChange("Dinheiro", e.target.value)}
+                                placeholder="0.00"
+                              />
+                              <span className="text-xs">R$</span>
+                            </div>
+                          )}
                         </div>
-                        {paymentMethods.some((p) => p.method === "Cartão de Crédito") && (
-                          <div className="flex items-center space-x-2">
-                            <Input
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              className="w-24 h-8 text-xs"
-                              value={paymentMethods.find((p) => p.method === "Cartão de Crédito")?.amount || ""}
-                              onChange={(e) => handlePaymentMethodAmountChange("Cartão de Crédito", e.target.value)}
-                              placeholder="0.00"
-                            />
-                            <span className="text-xs">R$</span>
-                          </div>
-                        )}
                       </div>
-                    </div>
 
-                    {/* Pagamento com Cartão de Débito */}
-                    <div className="border rounded-md p-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            id="debitCardPayment"
-                            className="w-4 h-4 text-xs"
-                            checked={paymentMethods.some((p) => p.method === "Cartão de Débito")}
-                            onChange={(e) => handlePaymentMethodToggle("Cartão de Débito", e.target.checked)}
-                          />
-                          <Label htmlFor="debitCardPayment" className="font-medium text-xs">
-                            Cartão de Débito
-                          </Label>
+                      {/* Pagamento com Cartão de Crédito */}
+                      <div className="border rounded-md p-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id="creditCardPayment"
+                              className="w-4 h-4 text-xs"
+                              checked={paymentMethods.some((p) => p.method === "Cartão de Crédito")}
+                              onChange={(e) => handlePaymentMethodToggle("Cartão de Crédito", e.target.checked)}
+                            />
+                            <Label htmlFor="creditCardPayment" className="font-medium text-xs">
+                              Cartão de Crédito
+                            </Label>
+                          </div>
+                          {paymentMethods.some((p) => p.method === "Cartão de Crédito") && (
+                            <div className="flex items-center space-x-2">
+                              <Input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                className="w-24 h-8 text-xs"
+                                value={paymentMethods.find((p) => p.method === "Cartão de Crédito")?.amount || ""}
+                                onChange={(e) => handlePaymentMethodAmountChange("Cartão de Crédito", e.target.value)}
+                                placeholder="0.00"
+                              />
+                              <span className="text-xs">R$</span>
+                            </div>
+                          )}
                         </div>
-                        {paymentMethods.some((p) => p.method === "Cartão de Débito") && (
-                          <div className="flex items-center space-x-2">
-                            <Input
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              className="w-24 h-8 text-xs"
-                              value={paymentMethods.find((p) => p.method === "Cartão de Débito")?.amount || ""}
-                              onChange={(e) => handlePaymentMethodAmountChange("Cartão de Débito", e.target.value)}
-                              placeholder="0.00"
-                            />
-                            <span className="text-xs">R$</span>
-                          </div>
-                        )}
                       </div>
-                    </div>
 
-                    {/* Pagamento com PIX */}
-                    <div className="border rounded-md p-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            id="pixPayment"
-                            className="w-4 h-4 text-xs"
-                            checked={paymentMethods.some((p) => p.method === "PIX")}
-                            onChange={(e) => handlePaymentMethodToggle("PIX", e.target.checked)}
-                          />
-                          <Label htmlFor="pixPayment" className="font-medium text-xs">
-                            PIX
-                          </Label>
+                      {/* Pagamento com Cartão de Débito */}
+                      <div className="border rounded-md p-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id="debitCardPayment"
+                              className="w-4 h-4 text-xs"
+                              checked={paymentMethods.some((p) => p.method === "Cartão de Débito")}
+                              onChange={(e) => handlePaymentMethodToggle("Cartão de Débito", e.target.checked)}
+                            />
+                            <Label htmlFor="debitCardPayment" className="font-medium text-xs">
+                              Cartão de Débito
+                            </Label>
+                          </div>
+                          {paymentMethods.some((p) => p.method === "Cartão de Débito") && (
+                            <div className="flex items-center space-x-2">
+                              <Input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                className="w-24 h-8 text-xs"
+                                value={paymentMethods.find((p) => p.method === "Cartão de Débito")?.amount || ""}
+                                onChange={(e) => handlePaymentMethodAmountChange("Cartão de Débito", e.target.value)}
+                                placeholder="0.00"
+                              />
+                              <span className="text-xs">R$</span>
+                            </div>
+                          )}
                         </div>
-                        {paymentMethods.some((p) => p.method === "PIX") && (
+                      </div>
+
+                      {/* Pagamento com PIX */}
+                      <div className="border rounded-md p-3">
+                        <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
-                            <Input
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              className="w-24 h-8 text-xs"
-                              value={paymentMethods.find((p) => p.method === "PIX")?.amount || ""}
-                              onChange={(e) => handlePaymentMethodAmountChange("PIX", e.target.value)}
-                              placeholder="0.00"
+                            <input
+                              type="checkbox"
+                              id="pixPayment"
+                              className="w-4 h-4 text-xs"
+                              checked={paymentMethods.some((p) => p.method === "PIX")}
+                              onChange={(e) => handlePaymentMethodToggle("PIX", e.target.checked)}
                             />
-                            <span className="text-xs">R$</span>
+                            <Label htmlFor="pixPayment" className="font-medium text-xs">
+                              PIX
+                            </Label>
                           </div>
-                        )}
+                          {paymentMethods.some((p) => p.method === "PIX") && (
+                            <div className="flex items-center space-x-2">
+                              <Input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                className="w-24 h-8 text-xs"
+                                value={paymentMethods.find((p) => p.method === "PIX")?.amount || ""}
+                                onChange={(e) => handlePaymentMethodAmountChange("PIX", e.target.value)}
+                                placeholder="0.00"
+                              />
+                              <span className="text-xs">R$</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Resumo do pagamento */}
+                      <div className="bg-muted p-3 rounded-md space-y-2">
+                        <div className="flex justify-between text-xs">
+                          <span>Total a pagar:</span>
+                          <span className="font-bold">{formatCurrency(totalAmount)}</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span>Total informado:</span>
+                          <span
+                            className={`font-medium ${totalPaid < totalAmount ? "text-red-500" : totalPaid > totalAmount ? "text-green-500" : ""}`}
+                          >
+                            {formatCurrency(totalPaid)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span>Diferença:</span>
+                          <span className={`font-bold ${remainingAmount > 0 ? "text-red-500" : "text-red-500"}`}>
+                            {formatCurrency(Math.abs(remainingAmount))}{" "}
+                            {remainingAmount > 0 ? "(faltando)" : remainingAmount < 0 ? "(troco)" : ""}
+                          </span>
+                        </div>
                       </div>
                     </div>
-
-                    {/* Resumo do pagamento */}
-                    <div className="bg-muted p-3 rounded-md space-y-2">
-                      <div className="flex justify-between text-xs">
-                        <span>Total a pagar:</span>
-                        <span className="font-bold">{formatCurrency(totalAmount)}</span>
-                      </div>
-                      <div className="flex justify-between text-xs">
-                        <span>Total informado:</span>
-                        <span
-                          className={`font-medium ${totalPaid < totalAmount ? "text-red-500" : totalPaid > totalAmount ? "text-green-500" : ""}`}
-                        >
-                          {formatCurrency(totalPaid)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-xs">
-                        <span>Diferença:</span>
-                        <span className={`font-bold ${remainingAmount > 0 ? "text-red-500" : "text-red-500"}`}>
-                          {formatCurrency(Math.abs(remainingAmount))}{" "}
-                          {remainingAmount > 0 ? "(faltando)" : remainingAmount < 0 ? "(troco)" : ""}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 space-y-2">
-                    <Button onClick={handleCheckout} className="h-8 text-xs py-0 w-full">
-                      Finalizar Venda
-                    </Button>
                   </div>
                 </div>
               </CardFooter>

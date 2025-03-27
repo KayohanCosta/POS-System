@@ -177,13 +177,13 @@ export default function Reports() {
       </div>
 
       <Tabs defaultValue="sales">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-2 overflow-y-hidden">
           <TabsTrigger value="sales">Vendas</TabsTrigger>
           <TabsTrigger value="services">Serviços</TabsTrigger>
         </TabsList>
 
         <TabsContent value="sales" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle>Total de Vendas</CardTitle>
@@ -259,8 +259,8 @@ export default function Reports() {
               {reportData.sales.length === 0 ? (
                 <p className="text-center text-muted-foreground">Nenhuma venda no período selecionado</p>
               ) : (
-                <div className="overflow-x-auto w-full bottom-spacing">
-                  <Table>
+                <div className="overflow-x-auto -mx-3 px-3 w-full bottom-spacing">
+                  <Table className="min-w-[650px]">
                     <TableHeader>
                       <TableRow>
                         <TableHead>Data/Hora</TableHead>
@@ -334,7 +334,7 @@ export default function Reports() {
         </TabsContent>
 
         <TabsContent value="services" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle>Ordens de Serviço</CardTitle>

@@ -28,6 +28,9 @@ import {
   Legend,
 } from "chart.js"
 
+// Adicione o import
+import BankConnectionsSummary from "@/components/bank-connections-summary"
+
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend)
 
@@ -311,6 +314,8 @@ export default function Dashboard() {
               </div>
             </CardContent>
           </Card>
+          {/* Outros cards... */}
+          <BankConnectionsSummary />
         </div>
       </div>
     )

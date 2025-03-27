@@ -245,7 +245,7 @@ export default function ServiceOrders() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="customerName">Nome do Cliente *</Label>
               <Input
@@ -428,8 +428,8 @@ export default function ServiceOrders() {
           {serviceOrders.length === 0 ? (
             <p className="text-center text-muted-foreground">Nenhuma ordem de serviço cadastrada</p>
           ) : (
-            <div className="overflow-x-auto w-full table-responsive bottom-spacing">
-              <Table>
+            <div className="overflow-x-auto -mx-3 px-3 w-full table-responsive bottom-spacing">
+              <Table className="min-w-[700px]">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[60px]">ID</TableHead>

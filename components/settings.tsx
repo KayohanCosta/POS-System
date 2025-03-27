@@ -26,6 +26,12 @@ import { Camera, ShoppingBag, Utensils, Beer, Receipt } from "lucide-react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 
+// Adicionar as novas importações no topo do arquivo:
+import CloudSyncComponent from "@/components/cloud-sync"
+import PaymentSettings from "@/components/payment-settings"
+import LoyaltyProgramComponent from "@/components/loyalty-program"
+import CustomerManagement from "@/components/customer-management"
+
 // Definição dos tipos
 type Permission = {
   id: string
@@ -709,21 +715,30 @@ export default function Settings() {
   return (
     <div className="space-y-4 max-w-full overflow-x-hidden">
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="w-full grid grid-cols-5 h-auto py-1 mb-2">
-          <TabsTrigger value="profile" className="text-xs sm:text-sm py-1 px-2 h-auto">
+        <TabsList className="w-full grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-1 h-auto py-2 mb-3 bg-muted/20 rounded-lg p-1">
+          <TabsTrigger value="profile" className="text-xs sm:text-sm py-1.5 px-2 h-9 text-center rounded-md">
             Perfil
           </TabsTrigger>
-          <TabsTrigger value="users" className="text-xs sm:text-sm py-1 px-2 h-auto">
+          <TabsTrigger value="users" className="text-xs sm:text-sm py-1.5 px-2 h-9 text-center rounded-md">
             Usuários
           </TabsTrigger>
-          <TabsTrigger value="roles" className="text-xs sm:text-sm py-1 px-2 h-auto">
+          <TabsTrigger value="roles" className="text-xs sm:text-sm py-1.5 px-2 h-9 text-center rounded-md">
             Perfis de Acesso
           </TabsTrigger>
-          <TabsTrigger value="receipt" className="text-xs sm:text-sm py-1 px-2 h-auto">
+          <TabsTrigger value="receipt" className="text-xs sm:text-sm py-1.5 px-2 h-9 text-center rounded-md">
             Comanda
           </TabsTrigger>
-          <TabsTrigger value="store" className="text-xs sm:text-sm py-1 px-2 h-auto">
+          <TabsTrigger value="store" className="text-xs sm:text-sm py-1.5 px-2 h-9 text-center rounded-md">
             Loja Online
+          </TabsTrigger>
+          <TabsTrigger value="sync" className="text-xs sm:text-sm py-1.5 px-2 h-9 text-center rounded-md">
+            Sincronização
+          </TabsTrigger>
+          <TabsTrigger value="payment" className="text-xs sm:text-sm py-1.5 px-2 h-9 text-center rounded-md">
+            Pagamentos
+          </TabsTrigger>
+          <TabsTrigger value="loyalty" className="text-xs sm:text-sm py-1.5 px-2 h-9 text-center rounded-md">
+            Fidelidade
           </TabsTrigger>
         </TabsList>
 
@@ -1536,6 +1551,24 @@ export default function Settings() {
                 </svg>
               </a>
             </Button>
+          </div>
+        </TabsContent>
+
+        {/* Aba de Sincronização */}
+        <TabsContent value="sync" className="mt-0">
+          <CloudSyncComponent />
+        </TabsContent>
+
+        {/* Aba de Pagamentos */}
+        <TabsContent value="payment" className="mt-0">
+          <PaymentSettings />
+        </TabsContent>
+
+        {/* Aba de Fidelidade */}
+        <TabsContent value="loyalty" className="mt-0">
+          <div className="space-y-4">
+            <LoyaltyProgramComponent />
+            <CustomerManagement />
           </div>
         </TabsContent>
       </Tabs>

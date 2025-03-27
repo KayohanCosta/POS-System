@@ -207,25 +207,25 @@ export default function Inventory() {
   const getColumnClass = (columnName: string): string => {
     switch (columnName) {
       case "produto":
-        return "w-[20%] truncate"
+        return "w-[25%] truncate-cell"
       case "descricao":
-        return "w-[30%] truncate hidden md:table-cell"
+        return "w-[30%] truncate-cell hidden md:table-cell"
       case "estoque":
-        return "w-[10%] text-center"
+        return "w-[15%] text-center"
       case "status":
-        return "w-[15%]"
+        return "w-[20%]"
       case "acoes":
         return "w-[15%] text-right"
       case "data":
-        return "w-[15%]"
+        return "w-[20%]"
       case "tipo":
-        return "w-[10%]"
+        return "w-[15%]"
       case "quantidade":
-        return "w-[10%] text-center"
+        return "w-[15%] text-center"
       case "motivo":
-        return "w-[20%] truncate hidden md:table-cell"
+        return "w-[25%] truncate-cell hidden md:table-cell"
       case "usuario":
-        return "w-[15%] truncate hidden md:table-cell"
+        return "w-[20%] truncate-cell hidden md:table-cell"
       default:
         return ""
     }
@@ -279,8 +279,8 @@ export default function Inventory() {
               {filteredProducts.length === 0 ? (
                 <p className="text-center text-muted-foreground">Nenhum produto encontrado</p>
               ) : (
-                <div className="w-full">
-                  <Table className="table-fixed w-full">
+                <div className="w-full overflow-x-auto -mx-3 px-3">
+                  <Table className="table-fixed w-full min-w-[600px]">
                     <TableHeader>
                       <TableRow>
                         <TableHead className={getColumnClass("produto")}>Produto</TableHead>
@@ -396,8 +396,8 @@ export default function Inventory() {
               {movements.length === 0 ? (
                 <p className="text-center text-muted-foreground">Nenhuma movimentação registrada</p>
               ) : (
-                <div className="w-full bottom-spacing">
-                  <Table className="table-fixed w-full">
+                <div className="w-full overflow-x-auto -mx-3 px-3 bottom-spacing">
+                  <Table className="table-fixed w-full min-w-[600px]">
                     <TableHeader>
                       <TableRow>
                         <TableHead className={getColumnClass("data")}>Data</TableHead>

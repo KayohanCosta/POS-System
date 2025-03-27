@@ -522,3 +522,121 @@ main.flex-1 {
   }
 }
 
+/* Mobile responsiveness improvements */
+@media (max-width: 640px) {
+  /* Prevent content overflow */
+  body,
+  html,
+  #__next,
+  main {
+    overflow-x: hidden !important;
+    position: relative;
+    width: 100%;
+  }
+
+  /* Improve table display on mobile */
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Adjust card padding for mobile */
+  .card-header,
+  .card-content,
+  .card-footer {
+    padding: 0.75rem !important;
+  }
+
+  /* Fix input and button sizes on mobile */
+  input,
+  select,
+  button {
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
+  }
+
+  /* Safe area for bottom navigation */
+  .pb-safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+  }
+
+  /* Fix dialog positioning on mobile */
+  .dialog-content {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* Fix table layout issues */
+.table-fixed {
+  table-layout: fixed !important;
+  width: 100% !important;
+}
+
+.truncate-cell {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Prevent horizontal scrolling */
+.prevent-overflow {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Mobile responsiveness fixes - only affects small screens */
+@media (max-width: 640px) {
+  /* Prevent content overflow on mobile */
+  body,
+  html,
+  #__next,
+  main {
+    overflow-x: hidden !important;
+    max-width: 100vw;
+  }
+
+  /* Make tables scrollable horizontally on mobile */
+  .table-responsive,
+  .overflow-x-auto {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  /* Ensure dialogs fit on mobile screens */
+  [role="dialog"] {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
+
+  /* Prevent text overflow in table cells */
+  td,
+  th {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Adjust card padding for mobile */
+  .card-header,
+  .card-content,
+  .card-footer {
+    padding: 0.75rem !important;
+  }
+
+  /* Ensure inputs are large enough to tap on mobile */
+  input,
+  select,
+  button {
+    min-height: 2.5rem;
+  }
+}
+

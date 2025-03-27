@@ -372,7 +372,7 @@ export function AppLayout({ children, onLogout, currentUser, onTabChange }: Layo
       >
         <div
           className={cn(
-            "fixed inset-y-0 left-0 z-50 w-3/4 max-w-xs bg-background p-6 shadow-lg transition-transform duration-300 ease-in-out",
+            "fixed inset-y-0 left-0 z-50 w-4/5 max-w-xs bg-background p-4 shadow-lg transition-transform duration-300 ease-in-out overflow-y-auto",
             isMobileMenuOpen ? "translate-x-0" : "-translate-x-full",
           )}
         >
@@ -467,9 +467,11 @@ export function AppLayout({ children, onLogout, currentUser, onTabChange }: Layo
           height: "calc(100vh - 120px)",
           overflowY: "auto",
           overflowX: "hidden",
-          padding: "1rem",
+          padding: "0.75rem",
           maxWidth: "100vw",
+          WebkitOverflowScrolling: "touch",
         }}
+        className="pb-safe-area-bottom mobile-content"
       >
         {children}
       </main>
