@@ -168,6 +168,10 @@ Um sistema completo de ponto de venda (PDV) desenvolvido por Kayohan Costa, com 
 - Desenvolvido por Kayohan Costa
 
 
+## 🚀 Live Demo
+🔗 [Acesse o projeto ao vivo](https://pos-systeem.vercel.app/)
+
+
 ## 📥 Instalação e Uso
 
 1. Clone o repositório:
