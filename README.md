@@ -213,9 +213,10 @@ npm run dev
 
 ## 🔜 Próximos Passos
 
-- Integração com sistemas de nuvens
+- Integração com sistemas de salvamentos em nuvens
 - Aplicativo móvel com React Native
-- Integração com sistemas de pagamento
+- Integração com sistemas de pagamento via Bancos 
+  (Bradesco, Santander, inter, Nubank, Caixa Economica Federal, Itaú, Mercado Pago)
 - Suporte a múltiplas filiais
 
 
