@@ -1,0 +1,524 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 221.2 83% 53.3%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --success: 142.1 76.2% 36.3%;
+    --success-foreground: 355.7 100% 97.3%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83% 53.3%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    @apply bg-background text-foreground;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+      "Helvetica Neue", sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Critical fix for scrolling */
+  html,
+  body,
+  #__next,
+  main {
+    height: 100% !important;
+    overflow: auto !important;
+  }
+
+  /* Override any overflow hidden that might be causing issues */
+  .overflow-hidden {
+    overflow: visible !important;
+  }
+
+  .max-h-screen {
+    max-height: none !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 0.5em;
+  }
+
+  h1 {
+    font-size: 1.875rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  p {
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  a {
+    color: hsl(var(--primary));
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  a:hover {
+    color: hsl(var(--primary) / 0.8);
+  }
+
+  /* Responsive typography */
+  @media (max-width: 768px) {
+    html,
+    body {
+      font-size: 15px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    h3 {
+      font-size: 1.125rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    html,
+    body {
+      font-size: 14px;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+    }
+
+    h2 {
+      font-size: 1.125rem;
+    }
+
+    h3 {
+      font-size: 1rem;
+    }
+  }
+}
+
+/* Custom components */
+@layer components {
+  /* Card styles */
+  .card-elegant {
+    @apply bg-card rounded-lg border border-border shadow-sm transition-all duration-200;
+  }
+
+  .card-elegant:hover {
+    @apply shadow-md;
+  }
+
+  .card-header-elegant {
+    @apply p-4 border-b border-border flex flex-col space-y-1.5;
+  }
+
+  .card-content-elegant {
+    @apply p-4;
+  }
+
+  .card-footer-elegant {
+    @apply p-4 border-t border-border;
+  }
+
+  /* Dashboard card */
+  .dashboard-card {
+    @apply bg-card rounded-lg border border-border shadow-sm p-4 transition-all duration-200 flex flex-col;
+  }
+
+  .dashboard-card:hover {
+    @apply shadow-md;
+  }
+
+  .dashboard-card-icon {
+    @apply mb-2 text-primary w-8 h-8;
+  }
+
+  .dashboard-card-value {
+    @apply text-2xl font-bold mb-1;
+  }
+
+  .dashboard-card-label {
+    @apply text-sm text-muted-foreground;
+  }
+
+  /* Status badges */
+  .status-badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+
+  .status-badge-pending {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+
+  .status-badge-success {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .status-badge-danger {
+    @apply bg-red-100 text-red-800;
+  }
+
+  /* Responsive table */
+  .table-responsive {
+    @apply w-full overflow-x-auto rounded-md border;
+  }
+
+  .table-responsive table {
+    @apply w-full;
+  }
+
+  .table-responsive th {
+    @apply bg-muted px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider;
+  }
+
+  .table-responsive td {
+    @apply px-4 py-3 text-sm border-t border-border;
+  }
+
+  .table-responsive tr:hover {
+    @apply bg-muted/50;
+  }
+
+  /* Form elements */
+  .form-group {
+    @apply mb-4;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium mb-1;
+  }
+
+  .form-input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Navigation */
+  .nav-tabs {
+    @apply flex space-x-1 rounded-lg bg-muted p-1;
+  }
+
+  .nav-tab {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .nav-tab-active {
+    @apply bg-background text-foreground shadow-sm;
+  }
+
+  .nav-tab-inactive {
+    @apply text-muted-foreground hover:text-foreground hover:bg-muted/80;
+  }
+
+  /* App header */
+  .app-header {
+    @apply bg-background border-b border-border py-3 px-4 flex items-center justify-between;
+  }
+
+  .app-logo {
+    @apply flex items-center space-x-2;
+  }
+
+  .app-logo-image {
+    @apply h-8 w-auto rounded-md;
+  }
+
+  .app-logo-text {
+    @apply text-lg font-semibold;
+  }
+
+  .user-menu {
+    @apply flex items-center space-x-2 text-sm;
+  }
+
+  .user-avatar {
+    @apply h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary;
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 640px) {
+    .card-header-elegant {
+      @apply p-3;
+    }
+
+    .card-content-elegant {
+      @apply p-3;
+    }
+
+    .card-footer-elegant {
+      @apply p-3;
+    }
+
+    .dashboard-card {
+      @apply p-3;
+    }
+
+    .table-responsive th,
+    .table-responsive td {
+      @apply px-2 py-2;
+    }
+
+    .app-header {
+      @apply py-2 px-3;
+    }
+  }
+
+  /* Utility classes */
+  .text-truncate {
+    @apply overflow-hidden text-ellipsis whitespace-nowrap;
+  }
+
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+
+  .flex-between {
+    @apply flex items-center justify-between;
+  }
+
+  .scrollable {
+    @apply overflow-auto;
+  }
+
+  .scrollable-y {
+    @apply overflow-y-auto overflow-x-hidden;
+  }
+
+  .scrollable-x {
+    @apply overflow-x-auto overflow-y-hidden;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Bottom spacing for scrollable content */
+  .bottom-spacing {
+    @apply pb-16;
+  }
+
+  /* Animations */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .slide-in {
+    animation: slideIn 0.3s ease-in-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+/* Add these custom scrollbar styles to the end of the file */
+@layer utilities {
+  /* Custom scrollbar styling */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 20px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: #9ca3af;
+  }
+
+  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+  }
+
+  .scrollbar-track-transparent::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  @variants responsive {
+    .xs\:grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .xs\:h-32 {
+      height: 8rem;
+    }
+  }
+}
+
+/* Improve mobile responsiveness */
+@media (max-width: 640px) {
+  .card {
+    @apply rounded-md;
+  }
+
+  .card-header {
+    @apply p-2;
+  }
+
+  .card-content {
+    @apply p-2;
+  }
+
+  .card-footer {
+    @apply p-2;
+  }
+}
+
+/* Fix for main content scrolling */
+.min-h-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main.flex-1 {
+  display: flex;
+  flex-direction: column;
+  overflow: auto !important;
+}
+
+/* Responsive fixes for small screens */
+@media (max-width: 480px) {
+  .max-w-\[95vw\] {
+    max-width: 95vw;
+  }
+
+  .max-w-\[70\%\] {
+    max-width: 70%;
+  }
+
+  .max-w-\[150px\] {
+    max-width: 150px;
+  }
+}
+
